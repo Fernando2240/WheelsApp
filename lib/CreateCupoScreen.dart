@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wheels_app/TravelHistoryScreen.dart';
 
 class CreateCupoScreen extends StatefulWidget {
   const CreateCupoScreen({Key? key}) : super(key: key);
@@ -417,10 +418,23 @@ class _CreateCupoScreenState extends State<CreateCupoScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _buildBottomNavItem(Icons.home, true),
-                  _buildBottomNavItem(Icons.access_time, false),
-                  _buildBottomNavItem(Icons.notifications_outlined, false),
-                  _buildBottomNavItem(Icons.person_outline, false),
+                  _buildBottomNavItem(Icons.home, true, () {
+                    // Estás en Home, no haces nada
+                  }),
+                  _buildBottomNavItem(Icons.access_time, false, () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TravelHistoryScreen(),
+                      ),
+                    );
+                  }),
+                  _buildBottomNavItem(Icons.notifications_outlined, false, () {
+                    // Puedes agregar navegación a notificaciones si deseas
+                  }),
+                  _buildBottomNavItem(Icons.person_outline, false, () {
+                    // Navegar a perfil si deseas
+                  }),
                 ],
               ),
             ),
@@ -479,12 +493,15 @@ class _CreateCupoScreenState extends State<CreateCupoScreen> {
     );
   }
 
-  Widget _buildBottomNavItem(IconData icon, bool isSelected) {
-    return Icon(
+  Widget _buildBottomNavItem(IconData icon, bool isSelected, VoidCallback onTap) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Icon(
       icon,
       size: 28,
       color: isSelected ? const Color(0xFF4ECDC4) : Colors.grey,
-    );
+    ),
+  );
   }
 
   Future<void> _selectDateTime(BuildContext context) async {
