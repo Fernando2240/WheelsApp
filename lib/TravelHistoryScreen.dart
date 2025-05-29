@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 class TravelHistoryScreen extends StatelessWidget {
   final List<Map<String, dynamic>> travelData = [
     {
@@ -18,7 +20,7 @@ class TravelHistoryScreen extends StatelessWidget {
           'price': '\$2,500',
           'vehicle': Icons.motorcycle,
         },
-      ]
+      ],
     },
     {
       'date': '25/03/24',
@@ -30,7 +32,7 @@ class TravelHistoryScreen extends StatelessWidget {
           'price': '\$3,500',
           'vehicle': Icons.motorcycle,
         },
-      ]
+      ],
     },
     {
       'date': '05/04/24',
@@ -42,50 +44,92 @@ class TravelHistoryScreen extends StatelessWidget {
           'price': '\$2,500',
           'vehicle': Icons.directions_car,
         },
-      ]
+      ],
     },
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
-            _buildHeader(),
+            _buildHeader(context),
+            SizedBox(
+              width: 363,
+              height: 38,
+              child: Text(
+                'Historial de viajes',
+                style: TextStyle(
+                  color: const Color(0xFF2E2E2E),
+                  fontSize: 30,
+                  fontFamily: 'Montserrat',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
             SizedBox(height: 10),
             Expanded(
               child: ListView(
-                children: travelData.map((entry) {
-                  return _buildDateGroup(entry['date'], entry['trips']);
-                }).toList(),
+                children:
+                    travelData.map((entry) {
+                      return _buildDateGroup(entry['date'], entry['trips']);
+                    }).toList(),
               ),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: _buildBottomNavBar(),
+      bottomNavigationBar: _buildBottomNavBar(context),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+      padding: EdgeInsets.all(20),
       child: Row(
         children: [
-          Icon(Icons.arrow_back, size: 28),
-          SizedBox(width: 16),
-          Expanded(
-            child: Text(
-              'Historial de viajes',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Flexible(
+              child: Container(
+                width: 40,
+                height: 47,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0x591D1D1D),
+                ),
+                child: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 183, 183, 183),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        'assets/Vector.svg',
+                        width:
+                            12, // ajusta al tamaño que veas en Figma (ej. 12x12)
+                        height: 12,
+                        color:
+                            Colors
+                                .white, // asegúrate que el SVG sea blanco o aplícale color
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
-          CircleAvatar(
-            backgroundImage: AssetImage('assets/avatar.jpg'), // Usa una imagen local o red
+          const Spacer(),
+          const CircleAvatar(
             radius: 20,
-          )
+            backgroundColor: Color(0xFFE0E0E0),
+            child: Icon(Icons.person, color: Colors.grey, size: 24),
+          ),
         ],
       ),
     );
@@ -98,7 +142,10 @@ class TravelHistoryScreen extends StatelessWidget {
         children: [
           Text(
             date,
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey[700]),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[700],
+            ),
           ),
           ...trips.map((trip) => _buildTripCard(trip)).toList(),
         ],
@@ -110,7 +157,11 @@ class TravelHistoryScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6),
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        color: Colors.white, // Fondo blanco
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: Colors.grey.shade300), // Contorno gris claro
+        ),
         elevation: 2,
         child: Padding(
           padding: const EdgeInsets.all(14.0),
@@ -123,7 +174,10 @@ class TravelHistoryScreen extends StatelessWidget {
                   children: [
                     Text(
                       trip['time'],
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     SizedBox(height: 4),
                     Row(
@@ -140,7 +194,10 @@ class TravelHistoryScreen extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 2),
-                    Text('Placa: ${trip['plate']}', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                    Text(
+                      'Placa: ${trip['plate']}',
+                      style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                    ),
                   ],
                 ),
               ),
@@ -151,10 +208,14 @@ class TravelHistoryScreen extends StatelessWidget {
                   SizedBox(height: 6),
                   Text(
                     trip['price'],
-                    style: TextStyle(fontSize: 16, color: Colors.teal, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.teal,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),
@@ -162,15 +223,45 @@ class TravelHistoryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomNavBar() {
-    return BottomNavigationBar(
-      selectedItemColor: Colors.teal,
-      unselectedItemColor: Colors.grey,
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-        BottomNavigationBarItem(icon: Icon(Icons.history), label: ''),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
-      ],
+  Widget _buildBottomNavBar(BuildContext context) {
+    return Container(
+      height: 60,
+      decoration: BoxDecoration(color: Colors.white),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildBottomNavItem(Icons.home, false, () {
+            // Estás en Home, no haces nada
+          }),
+          _buildBottomNavItem(Icons.access_time, true, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => TravelHistoryScreen()),
+            );
+          }),
+          _buildBottomNavItem(Icons.notifications_outlined, false, () {
+            // Puedes agregar navegación a notificaciones si deseas
+          }),
+          _buildBottomNavItem(Icons.person_outline, false, () {
+            // Navegar a perfil si deseas
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBottomNavItem(
+    IconData icon,
+    bool isSelected,
+    VoidCallback onTap,
+  ) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Icon(
+        icon,
+        size: 28,
+        color: isSelected ? const Color(0xFF409686) : Colors.grey,
+      ),
     );
   }
 }
